@@ -8,6 +8,7 @@ interface CreatorContextType {
   campaigns: Campaign[];
   notifications: Notification[];
   unreadCount: number;
+  hasSeenCelebration: boolean;
   setCreatorStatus: (status: CreatorStatus) => void;
   submitApplication: (name: string) => void;
   setCampaignStep: (campaignId: string, step: CampaignStep) => void;
@@ -16,6 +17,7 @@ interface CreatorContextType {
   markNotificationRead: (id: string) => void;
   markAllNotificationsRead: () => void;
   addNotification: (notification: Omit<Notification, 'id' | 'timestamp' | 'read'>) => void;
+  dismissCelebration: () => void;
   resetAll: () => void;
 }
 
@@ -136,6 +138,11 @@ export function CreatorProvider({ children }: { children: ReactNode }) {
   const [creatorStatus, setCreatorStatus] = useState<CreatorStatus>('accepted');
   const [campaigns, setCampaigns] = useState<Campaign[]>(INITIAL_CAMPAIGNS);
   const [notifications, setNotifications] = useState<Notification[]>(INITIAL_NOTIFICATIONS);
+  const [hasSeenCelebration, setHasSeenCelebration] = useState(false);
+
+  function dismissCelebration() {
+    setHasSeenCelebration(true);
+  }
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -204,6 +211,7 @@ export function CreatorProvider({ children }: { children: ReactNode }) {
     setCreatorStatus('not_applied');
     setCampaigns(INITIAL_CAMPAIGNS);
     setNotifications(INITIAL_NOTIFICATIONS);
+    setHasSeenCelebration(false);
   }
 
   // Expose helpers on window for Figma capture (temporary - remove after)
@@ -223,6 +231,7 @@ export function CreatorProvider({ children }: { children: ReactNode }) {
         campaigns,
         notifications,
         unreadCount,
+        hasSeenCelebration,
         setCreatorStatus,
         submitApplication,
         setCampaignStep,
@@ -231,6 +240,7 @@ export function CreatorProvider({ children }: { children: ReactNode }) {
         markNotificationRead,
         markAllNotificationsRead,
         addNotification,
+        dismissCelebration,
         resetAll,
       }}
     >

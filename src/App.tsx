@@ -1,5 +1,6 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { CreatorProvider } from '@/context/CreatorContext';
+import { DesignModeProvider } from '@/context/DesignModeContext';
 import Layout from '@/pages/Layout';
 import DashboardPage from '@/pages/DashboardPage';
 import ApplyPage from '@/pages/ApplyPage';
@@ -9,6 +10,7 @@ import ProfilePage from '@/pages/ProfilePage';
 
 function App() {
   return (
+    <DesignModeProvider>
     <CreatorProvider>
       <HashRouter>
         <Routes>
@@ -23,6 +25,7 @@ function App() {
         </Routes>
       </HashRouter>
     </CreatorProvider>
+    </DesignModeProvider>
   );
 }
 

@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Settings2, Bell, ToggleLeft, ToggleRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useCreator } from '@/context/CreatorContext';
 import { ALL_STEPS_ORDERED, type CampaignStep, type CreatorStatus, type PostingScheduleType } from '@/types';
 
@@ -27,11 +29,13 @@ const STEP_LABELS: Record<CampaignStep, string> = {
 };
 
 export function DemoControls() {
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
   const { creatorStatus, setCreatorStatus, campaigns, setCampaignStep, advanceCampaignStep, updateCampaignField, addNotification, resetAll } =
     useCreator();
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           size="sm"
@@ -174,7 +178,7 @@ export function DemoControls() {
               <Bell className="w-3.5 h-3.5" />
               Add Test Notification
             </Button>
-            <Button variant="destructive" size="sm" onClick={resetAll}>
+            <Button variant="destructive" size="sm" onClick={() => { resetAll(); setOpen(false); setTimeout(() => navigate('/apply'), 150); }}>
               Reset Everything
             </Button>
           </div>

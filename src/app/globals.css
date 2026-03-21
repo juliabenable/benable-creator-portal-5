@@ -51,42 +51,28 @@
   --radius-4xl: calc(var(--radius) + 16px);
 }
 
-/* ================================================================
-   BRAND REFINED — Figma Design System + Airbnb Patterns
-   Brand purple #7A5CFA, Inter font, clean elevation, professional
-   ================================================================ */
-
 :root {
-  /* Border radius: design system md=12px for base, lg=16px for cards */
   --radius: 0.75rem;
-  /* Neutrals: from Benable design system */
   --background: #FAFAFA;
   --foreground: #1C1C1C;
   --card: #FFFFFF;
   --card-foreground: #1C1C1C;
   --popover: #FFFFFF;
   --popover-foreground: #1C1C1C;
-  /* Accent purple: kept from design system */
   --primary: #7A5CFA;
   --primary-foreground: #FFFFFF;
-  /* Secondary: design system action-bg-light */
   --secondary: #F5F3FC;
   --secondary-foreground: #393939;
-  /* Muted: design system default-bg-weak + default-text-medium */
   --muted: #F1F1F1;
   --muted-foreground: #717171;
-  /* Accent: light purple from design system */
   --accent: #F5F3FC;
   --accent-foreground: #1C1C1C;
-  /* Semantic: from design system */
   --destructive: #FF5567;
   --border: #E3E3E3;
   --input: #C6C6C6;
   --ring: #AE94F9;
-  /* Success: design system success-text-strong #18906C, border #2BAF87 */
   --success: #2BAF87;
   --success-foreground: #FFFFFF;
-  /* Warning: design system warning-text-strong #E88E2C */
   --warning: #FFA747;
   --warning-foreground: #393939;
   --brand-accent: #7A5CFA;
@@ -103,7 +89,6 @@
   --sidebar-accent-foreground: #393939;
   --sidebar-border: #E3E3E3;
   --sidebar-ring: #AE94F9;
-  /* Shared theme infrastructure */
   --theme-transition-fast: 150ms;
   --theme-transition-base: 250ms;
   --theme-transition-slow: 400ms;
@@ -132,11 +117,9 @@
 }
 
 /* ================================================================
-   COMPONENT OVERRIDES — Brand Refined
-   Clean elevation, professional transitions, purposeful whitespace
+   TYPOGRAPHY — Figma Design System
    ================================================================ */
 
-/* Title typography: Helvetica Neue per design system */
 h1, h2, h3, h4, h5, h6,
 [data-slot="card-title"],
 .section-title,
@@ -144,24 +127,29 @@ h1, h2, h3, h4, h5, h6,
   font-family: "Helvetica Neue", "Helvetica", "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Cards: design system lg radius (16px), official shadow */
+/* ================================================================
+   CARDS — Figma: 16px radius, subtle shadow
+   ================================================================ */
+
 [data-slot="card"] {
   border-color: #E3E3E3;
   border-width: 1px;
-  box-shadow: 0px 4px 24px rgba(0,0,0,0.08);
+  box-shadow: 0px 4px 24px rgba(0,0,0,0.06);
   border-radius: 1rem;
-  transition: box-shadow 200ms ease, transform 200ms ease;
+  transition: box-shadow 250ms ease, transform 250ms ease;
 }
 [data-slot="card"]:hover {
-  box-shadow: 0px 8px 30px rgba(0,0,0,0.10);
+  box-shadow: 0px 8px 30px rgba(0,0,0,0.08);
 }
-/* Clean, subtle lift on interactive cards */
 [data-slot="card"].cursor-pointer:hover {
   transform: translateY(-1px);
-  box-shadow: 0px 16px 40px rgba(0,0,0,0.08);
+  box-shadow: 0px 16px 40px rgba(0,0,0,0.07);
 }
 
-/* Buttons: design system md radius (12px), semibold Inter 14px */
+/* ================================================================
+   BUTTONS — Figma: 12px radius, #7A5CFA
+   ================================================================ */
+
 [data-slot="button"][data-variant="default"] {
   border-radius: 0.75rem;
   box-shadow: none;
@@ -170,7 +158,7 @@ h1, h2, h3, h4, h5, h6,
   transition: all 200ms ease;
 }
 [data-slot="button"][data-variant="default"]:hover {
-  opacity: 0.9;
+  opacity: 0.92;
   transform: none;
   box-shadow: none;
 }
@@ -187,22 +175,10 @@ h1, h2, h3, h4, h5, h6,
   color: #7A5CFA;
 }
 
-/* Progress bars: clean, thin, brand color */
-[data-slot="progress"] {
-  height: 0.25rem;
-  border-radius: 9999px;
-  background-color: #F1F1F1;
-}
-[data-slot="progress-indicator"] {
-  background: #7A5CFA;
-  border-radius: 9999px;
-}
-/* Manual progress bars in StepIndicator */
-.h-2.bg-muted.rounded-full {
-  height: 0.25rem;
-}
+/* ================================================================
+   INPUTS — Figma MUI style: floating labels, rounded
+   ================================================================ */
 
-/* Inputs: design system md radius (12px), focused border #AE94F9, bg #F5F3FC */
 input,
 textarea,
 [data-slot="select-trigger"] {
@@ -218,80 +194,72 @@ textarea:focus {
   box-shadow: none;
 }
 
-/* Logo: gradient from purple to blue */
-.logo-mark {
-  border-radius: 0.5rem;
-  background: linear-gradient(135deg, #7A5CFA, #47B3FF) !important;
-}
+/* ================================================================
+   BADGES — Figma pill-shaped
+   ================================================================ */
 
-/* Brand name: clean, medium weight */
-.brand-name {
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-/* Section headers: clean hierarchy */
-.section-title {
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: #1C1C1C;
-}
-
-/* Badges: pill-shaped, clean typography */
 [data-slot="badge"] {
   font-weight: 500;
   letter-spacing: 0;
   border-radius: 9999px;
 }
 
-/* Page animations: smooth, professional (Airbnb-style) */
-.animate-in {
-  animation-duration: 250ms;
-  animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+/* ================================================================
+   PROGRESS BARS
+   ================================================================ */
+
+[data-slot="progress"] {
+  height: 0.25rem;
+  border-radius: 9999px;
+  background-color: #F1F1F1;
+}
+[data-slot="progress-indicator"] {
+  background: #7A5CFA;
+  border-radius: 9999px;
 }
 
-/* Collapsible cards: brand-tinted hover using design system accent bg */
-button.rounded-xl:hover {
-  background-color: rgba(245, 243, 252, 0.6);
+/* ================================================================
+   BRAND ELEMENTS
+   ================================================================ */
+
+.logo-mark {
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #7A5CFA, #47B3FF) !important;
 }
 
-/* Icon containers: gradient tint for diversity */
+.brand-name {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.section-title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #1C1C1C;
+}
+
 .icon-container {
   background: linear-gradient(135deg, rgba(122, 92, 250, 0.08), rgba(71, 179, 255, 0.08));
   border-radius: 0.75rem;
 }
 
-/* Step indicator active pulse: brand purple */
-.animate-ping {
-  border-color: rgba(122, 92, 250, 0.4) !important;
-  animation-duration: 2.5s;
-}
-
-/* Progress bar: gradient instead of flat purple */
-.bg-primary.rounded-full.transition-all {
-  background: linear-gradient(90deg, #7A5CFA, #47B3FF) !important;
-}
-
-/* Step circles completed: use teal accent for diversity */
-.bg-primary.text-primary-foreground.rounded-full {
-  background: linear-gradient(135deg, #7A5CFA, #47B3FF) !important;
-}
-
-/* Primary buttons: subtle gradient for depth */
-button.bg-primary {
-  background: linear-gradient(135deg, #7A5CFA, #6B4DE6) !important;
-}
-button.bg-primary:hover {
-  background: linear-gradient(135deg, #6B4DE6, #5E3FD9) !important;
-}
-
 /* ================================================================
-   KEYFRAME ANIMATIONS
+   ANIMATIONS
    ================================================================ */
 
-@keyframes theme-shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
+.animate-in {
+  animation-duration: 250ms;
+  animation-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@keyframes theme-fade-up {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes theme-scale-in {
+  0% { opacity: 0; transform: scale(0.97); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 @keyframes theme-bounce-in {
@@ -305,52 +273,575 @@ button.bg-primary:hover {
   50% { transform: translateY(-6px); }
 }
 
-@keyframes theme-fade-up {
-  0% { opacity: 0; transform: translateY(12px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes theme-scale-in {
-  0% { opacity: 0; transform: scale(0.97); }
-  100% { opacity: 1; transform: scale(1); }
-}
-
-@keyframes theme-skeleton-wave {
+@keyframes theme-shimmer {
   0% { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
 
-/* Warning / amber overrides: design system warning colors */
-.bg-amber-50 {
-  background-color: #FFF0E0 !important;
-}
-.bg-amber-100 {
-  background-color: #FFF0E0 !important;
-}
-.text-amber-500,
-.text-amber-600 {
-  color: #E88E2C !important;
-}
-.text-amber-700,
-.text-amber-800,
-.text-amber-900 {
-  color: #E88E2C !important;
-}
-.border-amber-200 {
-  border-color: #FFA747 !important;
+@keyframes scroll-brands {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-/* Success text overrides: design system success-text-strong */
-.text-success,
-.text-green-600,
-.text-green-700 {
-  color: #18906C !important;
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-/* Success bg: design system success-bg-weak */
-.bg-green-50 {
-  background-color: #EFFBF7 !important;
+
+@keyframes slide-in-bottom {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
-/* Error bg: design system danger-bg-weak */
-.bg-red-50 {
-  background-color: #FFF1F1 !important;
+
+@keyframes pulse-gentle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Utility animation classes */
+.animate-fade-in-up {
+  animation: fade-in-up 0.5s ease-out forwards;
+}
+
+.animate-slide-in-bottom {
+  animation: slide-in-bottom 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scroll-brands {
+  animation: scroll-brands 30s linear infinite;
+}
+
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* ================================================================
+   GLASSMORPHISM — Figma invitation card
+   ================================================================ */
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.66);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.1px solid rgba(255, 255, 255, 1);
+  box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.16);
+}
+
+/* Refined: more opaque glass card for better readability */
+.glass-card-refined {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.1px solid rgba(255, 255, 255, 1);
+  box-shadow: 0px 6px 60px rgba(0, 0, 0, 0.14);
+}
+
+/* ================================================================
+   BRAND LOGOS — Figma floating grid
+   ================================================================ */
+
+.brand-logo-card {
+  background: white;
+  border: 0.5px solid #4DAEFF;
+  border-radius: 16px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ================================================================
+   GRADIENT BACKGROUNDS — Figma rainbow gradient
+   ================================================================ */
+
+.gradient-rainbow {
+  background: linear-gradient(
+    90deg,
+    rgba(77, 175, 255, 0.25) 0%,
+    rgba(108, 159, 255, 0.22) 15%,
+    rgba(123, 153, 255, 0.22) 24%,
+    rgba(204, 161, 247, 0.22) 47%,
+    rgba(234, 169, 178, 0.20) 64%,
+    rgba(249, 173, 143, 0.20) 81%,
+    rgba(252, 183, 71, 0.22) 97%
+  );
+}
+
+/* Refined: slightly stronger rainbow gradient */
+.gradient-rainbow-refined {
+  background: linear-gradient(
+    90deg,
+    rgba(77, 175, 255, 0.22) 0%,
+    rgba(108, 159, 255, 0.22) 15%,
+    rgba(123, 153, 255, 0.22) 24%,
+    rgba(204, 161, 247, 0.22) 47%,
+    rgba(234, 169, 178, 0.22) 64%,
+    rgba(249, 173, 143, 0.22) 81%,
+    rgba(252, 183, 71, 0.22) 97%
+  );
+}
+
+.gradient-campaign-card {
+  background: linear-gradient(
+    135deg,
+    rgba(77, 175, 255, 0.12) 0%,
+    rgba(204, 161, 247, 0.12) 50%,
+    rgba(249, 173, 143, 0.08) 100%
+  );
+}
+
+/* ================================================================
+   TAG CHIPS — Figma tag/pill style
+   ================================================================ */
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  border: 1.5px solid #E3E3E3;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: "Helvetica Neue", sans-serif;
+  color: #1C1C1C;
+  background: white;
+  cursor: pointer;
+  transition: all 200ms ease;
+  user-select: none;
+}
+
+.tag-chip:hover {
+  border-color: #7A5CFA;
+  background: #F5F3FC;
+}
+
+.tag-chip.selected {
+  border-color: #7A5CFA;
+  background: #EBE4FF;
+  color: #5E518E;
+  font-weight: 500;
+}
+
+/* ================================================================
+   MUI-STYLE FLOATING LABEL INPUT
+   ================================================================ */
+
+.mui-input-wrapper {
+  position: relative;
+}
+
+.mui-input-wrapper input,
+.mui-input-wrapper select {
+  width: 100%;
+  padding: 22px 16px 8px 16px;
+  border: 1.5px solid #C6C6C6;
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: "Helvetica Neue", sans-serif;
+  background: white;
+  outline: none;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+
+.mui-input-wrapper input:focus,
+.mui-input-wrapper select:focus {
+  border-color: #7A5CFA;
+  border-width: 2px;
+  background: white;
+}
+
+.mui-input-wrapper label {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #717171;
+  pointer-events: none;
+  transition: all 200ms ease;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+.mui-input-wrapper input:focus ~ label,
+.mui-input-wrapper input:not(:placeholder-shown) ~ label,
+.mui-input-wrapper select:focus ~ label,
+.mui-input-wrapper .has-value ~ label {
+  top: 14px;
+  font-size: 12px;
+  color: #717171;
+}
+
+/* ================================================================
+   TAB NAVIGATION — Figma style
+   ================================================================ */
+
+.tab-nav {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #E3E3E3;
+  padding-bottom: 0;
+}
+
+.tab-nav button {
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Helvetica Neue", sans-serif;
+  color: #717171;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 200ms ease;
+  white-space: nowrap;
+}
+
+.tab-nav button:hover {
+  color: #1C1C1C;
+}
+
+.tab-nav button.active {
+  color: #1C1C1C;
+  font-weight: 600;
+}
+
+.tab-nav button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #ae94f9;
+  border-radius: 1px;
+}
+
+/* ================================================================
+   DESKTOP HEADER — Figma navigation
+   ================================================================ */
+
+.desktop-header {
+  height: 116px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  background: white;
+  border-bottom: 1px solid #E3E3E3;
+}
+
+.desktop-header .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #717171;
+  transition: color 200ms ease;
+  text-decoration: none;
+}
+
+.desktop-header .nav-link:hover,
+.desktop-header .nav-link.active {
+  color: #7A5CFA;
+}
+
+.desktop-header .search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1.5px solid #E3E3E3;
+  border-radius: 24px;
+  background: white;
+  min-width: 280px;
+  transition: border-color 200ms ease;
+}
+
+.desktop-header .search-bar:focus-within {
+  border-color: #7A5CFA;
+}
+
+/* ================================================================
+   VIEWPORT TOGGLE — Mobile/Desktop switch
+   ================================================================ */
+
+.viewport-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid #E3E3E3;
+}
+
+.viewport-toggle button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  color: #717171;
+}
+
+.viewport-toggle button.active {
+  background: #7A5CFA;
+  color: white;
+}
+
+/* Mobile frame when in desktop viewport mode */
+.mobile-frame {
+  width: 375px;
+  min-height: 100vh;
+  margin: 24px auto;
+  border-radius: 24px;
+  box-shadow: 0 8px 60px rgba(0, 0, 0, 0.15);
+  border: 1px solid #E3E3E3;
+  background: white;
+  position: relative;
+}
+
+/* ================================================================
+   SCREENSHOT UPLOAD — Figma dashed boxes
+   ================================================================ */
+
+.screenshot-upload-box {
+  border: 2px dashed #E3E3E3;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 200ms ease;
+  background: white;
+  min-height: 124px;
+}
+
+.screenshot-upload-box:hover {
+  border-color: #7A5CFA;
+  background: #F5F3FC;
+}
+
+/* ================================================================
+   CAMPAIGN CARD — Figma gradient header
+   ================================================================ */
+
+.campaign-card-header {
+  background: linear-gradient(
+    135deg,
+    rgba(200, 182, 240, 0.5) 0%,
+    rgba(216, 200, 246, 0.45) 30%,
+    rgba(232, 220, 250, 0.4) 60%,
+    rgba(245, 210, 220, 0.35) 100%
+  );
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+}
+
+/* Refined: stronger gradient with more visible pink */
+.campaign-card-header-refined {
+  background: linear-gradient(
+    135deg,
+    rgba(190, 168, 240, 0.6) 0%,
+    rgba(210, 190, 248, 0.5) 30%,
+    rgba(230, 210, 250, 0.45) 55%,
+    rgba(248, 195, 210, 0.45) 100%
+  );
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+}
+
+/* ================================================================
+   STEP INDICATOR — Figma numbered circles
+   ================================================================ */
+
+.step-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Helvetica Neue", sans-serif;
+  transition: all 300ms ease;
+}
+
+.step-circle.active {
+  background: #7A5CFA;
+  color: white;
+}
+
+.step-circle.completed {
+  background: #7A5CFA;
+  color: white;
+}
+
+.step-circle.pending {
+  background: #F1F1F1;
+  color: #717171;
+}
+
+.step-connector {
+  height: 4px;
+  flex: 1;
+  background: #F1F1F1;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-connector.completed {
+  background: #7A5CFA;
+}
+
+/* ================================================================
+   INFO ALERT CARD — Figma blue tint
+   ================================================================ */
+
+.alert-info-card {
+  background: linear-gradient(135deg, rgba(71, 179, 255, 0.08), rgba(122, 92, 250, 0.06));
+  border: 1px solid rgba(71, 179, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* ================================================================
+   SEMANTIC COLOR OVERRIDES
+   ================================================================ */
+
+.bg-amber-50 { background-color: #FFF0E0 !important; }
+.bg-amber-100 { background-color: #FFF0E0 !important; }
+.text-amber-500, .text-amber-600 { color: #E88E2C !important; }
+.text-amber-700, .text-amber-800, .text-amber-900 { color: #E88E2C !important; }
+.border-amber-200 { border-color: #FFA747 !important; }
+.text-success, .text-green-600, .text-green-700 { color: #18906C !important; }
+.bg-green-50 { background-color: #EFFBF7 !important; }
+.bg-red-50 { background-color: #FFF1F1 !important; }
+
+/* ================================================================
+   SCROLLBAR HIDE
+   ================================================================ */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ================================================================
+   SOCIAL ICONS
+   ================================================================ */
+
+.instagram-gradient {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.tiktok-bg {
+  background: #000000;
+}
+
+/* ================================================================
+   CONFETTI — Celebration screen
+   ================================================================ */
+
+@keyframes confetti-fall {
+  0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0.6; }
+}
+
+@keyframes confetti-sway {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(15px); }
+  75% { transform: translateX(-15px); }
+}
+
+.confetti-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  animation: confetti-fall linear forwards, confetti-sway 2s ease-in-out infinite;
+}
+
+/* ================================================================
+   CELEBRATION SCREEN — YOU'RE IN
+   ================================================================ */
+
+.celebration-bg {
+  background: linear-gradient(
+    180deg,
+    rgba(200, 182, 240, 0.25) 0%,
+    rgba(216, 200, 246, 0.15) 40%,
+    rgba(255, 255, 255, 1) 100%
+  );
+}
+
+.brand-logo-grid-item {
+  width: 64px;
+  height: 64px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 11px;
+  color: #1A1A1A;
+  font-family: "Helvetica Neue", sans-serif;
+}
+
+@keyframes celebration-pop {
+  0% { opacity: 0; transform: scale(0.8); }
+  60% { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.animate-celebration-pop {
+  animation: celebration-pop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes youre-in-text {
+  0% { opacity: 0; transform: scale(0.5) translateY(20px); }
+  50% { transform: scale(1.1) translateY(-5px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-youre-in {
+  animation: youre-in-text 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  opacity: 0;
 }

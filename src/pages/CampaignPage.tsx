@@ -29,19 +29,15 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import { StepIndicator } from '@/components/StepIndicator';
-import { BrandAvatar } from '@/components/BrandAvatar';
 import { useCreator } from '@/context/CreatorContext';
 import { toast } from 'sonner';
 import {
-  ArrowLeft,
-  ArrowRight,
   Calendar,
   CheckCircle2,
   AlertTriangle,
   Package,
   Upload,
   ExternalLink,
-  Send,
   PartyPopper,
   Clock,
   FileText,
@@ -49,7 +45,6 @@ import {
   ChevronDown,
   AlertCircle,
   XCircle,
-  ThumbsDown,
   MapPin,
   Plus,
   Trash2,
@@ -61,7 +56,9 @@ import {
   Check,
   Gift,
   CheckCircle,
-  Settings2,
+  Sparkles,
+  Target,
+  Truck,
 } from 'lucide-react';
 import type { Campaign, ContentLinkEntry } from '@/types';
 import { StickyCTA } from '@/components/StickyCTA';
@@ -88,7 +85,7 @@ function ContentLinkPreview({ platform, url }: { platform: string; url: string }
   );
 }
 
-/* ─── Uploaded Asset Preview — shows simulated uploaded file ─── */
+/* ─── Uploaded Asset Preview ─── */
 function UploadedAssetPreview({ platform, fileName, caption }: { platform: string; fileName: string; caption?: string }) {
   const isVideo = fileName.match(/\.(mp4|mov|webm|avi)$/i);
 
@@ -155,7 +152,6 @@ export default function CampaignPage() {
     );
   }
 
-  // Don't show full page for declined campaigns
   if (campaign.declined) {
     return (
       <div className="max-w-lg mx-auto px-4 py-10 text-center">
@@ -168,38 +164,20 @@ export default function CampaignPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-4 space-y-5">
-      {/* Back button */}
-      <button
-        onClick={() => navigate('/')}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back
-      </button>
+    <div className="max-w-lg mx-auto px-4 py-4 space-y-5 pb-36">
+      {/* Step Indicator — only for non-interest_check steps */}
+      {campaign.currentStep !== 'interest_check' && (
+        <Card className="py-4">
+          <CardContent>
+            <StepIndicator currentStep={campaign.currentStep} />
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Campaign Header with Brand Avatar */}
-      <div className="flex items-center gap-3">
-        <BrandAvatar campaign={campaign} size="lg" />
-        <div>
-          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
-            {campaign.brandName}
-          </p>
-          <h1 className="text-xl font-bold mt-0.5">{campaign.title}</h1>
-        </div>
-      </div>
-
-      {/* Step Indicator — always visible */}
-      <Card className="py-4">
-        <CardContent>
-          <StepIndicator currentStep={campaign.currentStep} />
-        </CardContent>
-      </Card>
-
-      {/* Dynamic Step Content with Animation */}
+      {/* Dynamic Step Content */}
       <div
         key={campaign.currentStep}
-        className="animate-in fade-in-0 slide-in-from-right-4 duration-300"
+        className="animate-fade-in-up"
       >
         <StepContent campaign={campaign} />
       </div>
@@ -236,19 +214,22 @@ function StepContent({ campaign }: { campaign: Campaign }) {
 
 type StepProps = { campaign: Campaign };
 
-/* ─── Inline SVG brand logo for brief header ─── */
-function BrandLogo28Litsea() {
+/* ─── Brand Logo for 28 Litsea ─── */
+function BrandLogo28Litsea({ size = 48 }: { size?: number }) {
   return (
-    <div className="w-12 h-12 rounded-full bg-[#2a2a3d] flex items-center justify-center shrink-0 overflow-hidden">
+    <div
+      className="rounded-full bg-[#2a2a3d] flex items-center justify-center shrink-0 overflow-hidden"
+      style={{ width: size, height: size }}
+    >
       <div className="text-center leading-none">
-        <span className="block text-white/90 text-[7px] font-light italic tracking-[0.15em]" style={{ fontFamily: 'Georgia, serif' }}>28</span>
-        <span className="block text-white/90 text-[6.5px] font-light tracking-[0.2em] uppercase mt-[1px]" style={{ fontFamily: 'Georgia, serif' }}>LITSEA</span>
+        <span className="block text-white/90 text-[8px] font-light italic tracking-[0.15em]" style={{ fontFamily: 'Georgia, serif' }}>28</span>
+        <span className="block text-white/90 text-[7px] font-light tracking-[0.2em] uppercase mt-[1px]" style={{ fontFamily: 'Georgia, serif' }}>LITSEA</span>
       </div>
     </div>
   );
 }
 
-/* ─── Green filled check icon matching design ─── */
+/* ─── Green filled check icon ─── */
 function GreenCheck() {
   return (
     <div className="w-[18px] h-[18px] rounded-full bg-green-500 flex items-center justify-center shrink-0">
@@ -257,7 +238,7 @@ function GreenCheck() {
   );
 }
 
-/* ─── Step: Interest Check (Full Campaign Brief — matching Figma design) ─── */
+/* ─── Step: Interest Check (Campaign Brief — matching Figma) ─── */
 function InterestCheckStep({ campaign }: StepProps) {
   const { setCampaignStep, updateCampaignField } = useCreator();
   const [showDecline, setShowDecline] = useState(false);
@@ -269,104 +250,132 @@ function InterestCheckStep({ campaign }: StepProps) {
   const firstProduct = campaign.productOptions?.[0];
 
   return (
-    <div className="space-y-4">
-      {/* Main Brief Card */}
-      <Card className="overflow-hidden shadow-md border-0">
-        {/* Purple gradient header — soft pastel lavender */}
-        <div className="bg-gradient-to-r from-[#d8c8f0] via-[#e4d6f6] to-[#ede0f8] px-6 py-7">
+    <div className="space-y-5">
+      {/* Campaign Header Card — gradient with brand logo */}
+      <div
+        className="rounded-[12px] border border-[#e8daec] overflow-hidden relative"
+        style={{
+          background: 'linear-gradient(81.26deg, rgba(204,161,247,0.12) 7%, rgba(215,164,222,0.12) 48%, rgba(234,169,178,0.12) 95%), linear-gradient(90deg, white 0%, white 100%)',
+        }}
+      >
+        {/* Decorative blurred blobs */}
+        <div className="absolute top-0 right-0 w-24 h-24 bg-[#eaa9b2] rounded-full blur-[54px] opacity-60 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-[rgba(122,92,250,0.5)] rounded-full blur-[54px] opacity-60 pointer-events-none" />
+        <div className="relative px-5 py-5">
           <div className="flex items-center gap-3.5">
-            <BrandLogo28Litsea />
+            <BrandLogo28Litsea size={40} />
             <div>
-              <h2 className="text-[17px] font-bold text-foreground leading-snug">{campaign.title}</h2>
-              <p className="text-[13px] text-[#7c5cbf] font-medium mt-0.5">by {campaign.brandName}</p>
+              <h2 className="font-semibold text-[16px] text-[#222] leading-snug">{campaign.title}</h2>
+              <p className="font-medium text-[14px] text-[#7a5cfa] mt-0.5">by {campaign.brandName}</p>
             </div>
           </div>
         </div>
+      </div>
 
-        <CardContent className="px-6 pt-7 pb-8 space-y-7">
-          {/* About the Brand */}
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-2">
-              <Settings2 className="w-[18px] h-[18px] text-muted-foreground/70" />
-              <h3 className="font-bold text-[15px]">About the Brand</h3>
-            </div>
-            <p className="text-[14px] text-muted-foreground leading-relaxed">
-              {campaign.brandAbout || 'Clean, plant-based skincare rooted in nature. Crafted with sustainably sourced botanicals for radiant, healthy skin.'}
-            </p>
-          </div>
+      {/* About the Brand — standalone section */}
+      <div className="space-y-2.5">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-[#717171]" />
+          <h3 className="font-semibold text-[16px] text-[#222]">About the Brand</h3>
+        </div>
+        <p className="text-[14px] text-[#3f3f46] leading-[20px]">
+          {campaign.brandAbout || 'Clean, plant-based skincare rooted in nature. Crafted with sustainably sourced botanicals for radiant, healthy skin.'}
+        </p>
+      </div>
 
-          {/* Goal */}
-          <div className="border border-border/80 rounded-xl p-5 space-y-2.5">
-            <div className="flex items-center gap-2">
-              <svg className="w-[18px] h-[18px] text-muted-foreground/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
-              </svg>
-              <h3 className="font-bold text-[15px]">Goal</h3>
-            </div>
-            <p className="text-[14px] text-muted-foreground leading-relaxed">
-              {campaign.description}
-            </p>
-          </div>
+      <div className="border-t border-gray-200" />
 
-          <Separator />
+      {/* Goal — light card */}
+      <div className="bg-[#faf8ff] border-[0.5px] border-[#d6cfea] rounded-[16px] px-4 pt-4 pb-6 space-y-2.5">
+        <div className="flex items-center gap-2">
+          <Target className="w-5 h-5 text-[#717171]" />
+          <h3 className="font-semibold text-[16px] text-[#222]">Goal</h3>
+        </div>
+        <p className="text-[16px] text-[#1c1c1c] leading-[22.75px]">
+          {campaign.description}
+        </p>
+      </div>
 
-          {/* Compensation */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Gift className="w-[18px] h-[18px] text-muted-foreground/70" />
-              <h3 className="font-bold text-[15px]">Compensation</h3>
-            </div>
+      <div className="border-t border-gray-200" />
 
-            <div className="border border-border/80 rounded-xl p-5 space-y-3.5">
-              <Badge variant="outline" className="text-xs font-semibold text-green-700 border-green-400 bg-white rounded-full px-3 py-1">
-                {campaign.compensationType}
-              </Badge>
-              <p className="text-[14px] text-muted-foreground">
-                Choose 1 product from the selection below. This is the product you'll feature in your content.
-              </p>
+      {/* Compensation */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <Gift className="w-5 h-5 text-[#717171]" />
+          <h3 className="font-semibold text-[16px] text-[#222]">Compensation</h3>
+        </div>
 
-              {/* Product tile */}
-              {firstProduct && (
-                <div className="flex items-center gap-3.5 pt-1">
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center shrink-0 overflow-hidden border border-border/40">
-                    {firstProduct.imageUrl ? (
-                      <img src={firstProduct.imageUrl} alt={firstProduct.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="flex flex-col items-center">
-                        <div className="w-6 h-8 rounded bg-gray-200/80 relative">
-                          <div className="absolute inset-x-1 top-1 h-3 rounded-sm bg-white/60" />
-                          <div className="absolute bottom-0 inset-x-0 h-2 bg-gray-300/50 rounded-b" />
-                        </div>
-                      </div>
-                    )}
+        <span className="inline-block bg-[#faf8ff] border border-[#7a5cfa] rounded-full px-2.5 py-1 text-[14px] text-[#7a5cfa] font-medium">
+          {campaign.compensationType}
+        </span>
+
+        <div className="bg-[#f9fafa] border-[0.5px] border-[#ddd] rounded-[16px] p-3 space-y-3">
+          <p className="text-[14px] text-[#3f3f46]">
+            Choose 1 product from the selection below. This is the product you'll feature in your content.
+          </p>
+
+          {/* Product tile */}
+          {firstProduct && (
+            <div className="flex items-center gap-3.5 bg-white rounded-xl p-3 shadow-sm">
+              <div className="w-16 h-16 rounded-xl bg-white flex items-center justify-center shrink-0 overflow-hidden border border-[#E8E8E8]">
+                {firstProduct.imageUrl ? (
+                  <img src={firstProduct.imageUrl} alt={firstProduct.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="flex flex-col items-center">
+                    <div className="w-6 h-8 rounded bg-gray-200/80 relative">
+                      <div className="absolute inset-x-1 top-1 h-3 rounded-sm bg-white/60" />
+                      <div className="absolute bottom-0 inset-x-0 h-2 bg-gray-300/50 rounded-b" />
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold">{firstProduct.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {firstProduct.size}{firstProduct.stock ? ` · ${firstProduct.stock} in stock` : ''}
-                    </p>
-                  </div>
-                  {firstProduct.price && (
-                    <p className="text-[15px] font-semibold shrink-0">
-                      ${firstProduct.price.toFixed(2)}
-                    </p>
-                  )}
-                </div>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-bold text-[#1A1A1A]">{firstProduct.name}</p>
+                <p className="text-xs text-[#717171] mt-0.5">
+                  {firstProduct.size}{firstProduct.stock ? ` · ${firstProduct.stock} in stock` : ''}
+                </p>
+              </div>
+              {firstProduct.price && (
+                <p className="text-[15px] font-semibold shrink-0 text-[#1A1A1A]">
+                  ${firstProduct.price.toFixed(2)}
+                </p>
               )}
             </div>
-          </div>
+          )}
+        </div>
+      </div>
 
-          <Separator />
+      <div className="border-t border-gray-200" />
 
-          {/* Content Deliverable */}
+      {/* Content Deliverable */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <FileText className="w-5 h-5 text-[#717171]" />
+          <h3 className="font-semibold text-[16px] text-[#222]">Content Deliverable</h3>
+        </div>
+        <ul className="space-y-2.5">
+          {deliverables.map((item, i) => (
+            <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#3f3f46]">
+              <span className="mt-[2px]"><GreenCheck /></span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="border-t border-gray-200" />
+
+      {/* Other Instructions */}
+      {instructions.length > 0 && (
+        <>
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <FileText className="w-[18px] h-[18px] text-muted-foreground/70" />
-              <h3 className="font-bold text-[15px]">Content Deliverable</h3>
+              <CheckCircle className="w-5 h-5 text-[#717171]" />
+              <h3 className="font-semibold text-[16px] text-[#222]">Other Instructions</h3>
             </div>
             <ul className="space-y-2.5">
-              {deliverables.map((item, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-[14px] text-muted-foreground">
+              {instructions.map((item, i) => (
+                <li key={i} className="flex items-start gap-2.5 text-[14px] text-[#3f3f46]">
                   <span className="mt-[2px]"><GreenCheck /></span>
                   {item}
                 </li>
@@ -374,64 +383,39 @@ function InterestCheckStep({ campaign }: StepProps) {
             </ul>
           </div>
 
-          <Separator />
+          <div className="border-t border-gray-200" />
+        </>
+      )}
 
-          {/* Other Instructions */}
-          {instructions.length > 0 && (
-            <>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="w-[18px] h-[18px] text-muted-foreground/70" />
-                  <h3 className="font-bold text-[15px]">Other Instructions</h3>
-                </div>
-                <ul className="space-y-2.5">
-                  {instructions.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-[14px] text-muted-foreground">
-                      <span className="mt-[2px]"><GreenCheck /></span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      {/* Terms & Commitments */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="w-5 h-5 text-[#717171]" />
+          <h3 className="font-semibold text-[16px] text-[#222]">Terms & Commitments</h3>
+        </div>
+        <p className="text-[14px] text-[#3f3f46] leading-[20px]">
+          {campaign.termsText || 'You agree to deliver the content described above. All content must be submitted for review before publishing. You agree to keep the product and campaign details confidential until publication. UGC rights granted for 90 days across brand channels.'}
+        </p>
+      </div>
 
-              <Separator />
-            </>
-          )}
-
-          {/* Terms & Commitments */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="w-[18px] h-[18px] text-muted-foreground/70" />
-              <h3 className="font-bold text-[15px]">Terms & Commitments</h3>
-            </div>
-            <p className="text-[14px] text-muted-foreground leading-relaxed">
-              {campaign.termsText || 'You agree to deliver the content described above. All content must be submitted for review before publishing. You agree to keep the product and campaign details confidential until publication. UGC rights granted for 90 days across brand channels.'}
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Accept / Decline Actions */}
+      {/* Accept / Decline Actions — Sticky CTA */}
       {!showDecline ? (
-        <StickyCTA>
-          <div className="space-y-3">
-            <Button
-              className="w-full h-12 text-base font-semibold"
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-[#E8E8E8] px-4 py-4 pb-6">
+          <div className="max-w-lg mx-auto space-y-2">
+            <button
+              className="w-full h-[48px] rounded-[12px] bg-[#7a5cfa] text-white text-[16px] font-medium hover:bg-[#6B4FE0] transition-colors active:scale-[0.98]"
               onClick={() => setShowCommitDialog(true)}
             >
-              <ShieldCheck className="w-5 h-5 mr-2" />
               Accept & Commit
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full h-12 text-base"
+            </button>
+            <button
+              className="w-full py-2 text-[14px] text-[#717171] font-medium hover:text-[#1A1A1A] transition-colors"
               onClick={() => setShowDecline(true)}
             >
-              <ThumbsDown className="w-5 h-5 mr-2" />
               Not This Time
-            </Button>
+            </button>
           </div>
-        </StickyCTA>
+        </div>
       ) : (
         <Card>
           <CardHeader className="pb-3">
@@ -516,268 +500,196 @@ function InterestCheckStep({ campaign }: StepProps) {
   );
 }
 
-/* ─── InvitationStep now redirects to interest_check (merged) ─── */
+/* ─── InvitationStep ─── */
 function InvitationStep({ campaign }: StepProps) {
   const { setCampaignStep } = useCreator();
-  // If somehow we land on 'invitation' step, redirect to product_phase
   setCampaignStep(campaign.id, 'product_phase');
   return null;
 }
 
-/* ─── Step: Product Phase (with product choice + address confirm/modify + checkout) ─── */
+/* ─── Step: Product Phase ─── */
 function ProductPhaseStep({ campaign }: StepProps) {
   const { setCampaignStep, updateCampaignField } = useCreator();
-  const [addressConfirmed, setAddressConfirmed] = useState(false);
   const [editingAddress, setEditingAddress] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>(campaign.selectedProduct || '');
-  const [productPage, setProductPage] = useState(0);
 
   const hasProductChoice = campaign.productType === 'product_choice' && campaign.productOptions && campaign.productOptions.length > 1;
-  const productChosen = hasProductChoice ? !!selectedProductId : true;
-
-  // Pagination: show 4 products at a time
-  const PRODUCTS_PER_PAGE = 4;
   const allProducts = campaign.productOptions || [];
-  const totalPages = Math.ceil(allProducts.length / PRODUCTS_PER_PAGE);
-  const paginatedProducts = allProducts.slice(productPage * PRODUCTS_PER_PAGE, (productPage + 1) * PRODUCTS_PER_PAGE);
 
   return (
     <div className="space-y-4">
-      {/* Product Choice — shown when brand offers multiple products */}
-      {hasProductChoice && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
-              <Package className="w-4 h-4 text-primary" />
-              Choose Your Product
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-xs text-muted-foreground -mt-1">
-              {campaign.brandName} is offering you a choice. Select the one you'd like to feature.
-            </p>
-            <div className="grid grid-cols-2 gap-3">
-              {paginatedProducts.map((option) => {
-                const isSelected = selectedProductId === option.id;
-                const productUrl = `https://${campaign.brandName.toLowerCase().replace(/\s+/g, '')}.com`;
-                return (
-                  <div key={option.id}>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedProductId(option.id);
-                        updateCampaignField(campaign.id, { selectedProduct: option.id });
-                        toast.success(`Selected: ${option.name}`);
-                      }}
-                      className={`w-full text-left rounded-lg border-2 overflow-hidden transition-all ${
-                        isSelected
-                          ? 'border-primary ring-1 ring-primary/20'
-                          : 'border-border hover:border-primary/40'
-                      }`}
-                    >
-                      {/* Product image — portrait / 3:4 ratio */}
-                      <div className="w-full aspect-[3/4] bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center relative">
-                        {option.imageUrl ? (
-                          <img src={option.imageUrl} alt={option.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <Package className="w-8 h-8 text-muted-foreground/40" />
-                        )}
-                        {/* Selection indicator overlay */}
-                        {isSelected && (
-                          <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-3.5 h-3.5 text-white" />
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-3">
-                        <p className={`text-sm font-semibold leading-tight ${isSelected ? 'text-primary' : ''}`}>
-                          {option.name}
-                        </p>
-                        {option.description && (
-                          <p className="text-[11px] text-muted-foreground mt-1 line-clamp-2">{option.description}</p>
-                        )}
-                        {option.size && (
-                          <p className="text-[11px] text-muted-foreground mt-0.5">{option.size}</p>
-                        )}
-                      </div>
-                    </button>
-                    {/* "View on website" button — always visible, separate from card click */}
-                    <a
-                      href={productUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-1.5 text-xs text-primary font-medium mt-1.5 py-1.5 hover:underline"
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                      View on website
-                    </a>
-                  </div>
-                );
-              })}
+      {/* Shipping Address Card */}
+      <div className="bg-white border-[0.5px] border-[#e3e3e3] rounded-[16px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)] p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <MapPin className="w-5 h-5 text-[#7a5cfa]" />
+            <span className="font-semibold text-[14px] text-[#1c1c1c]">Shipping Address</span>
+          </div>
+          <button
+            onClick={() => setEditingAddress(!editingAddress)}
+            className="font-semibold text-[14px] text-[#7a5cfa]"
+          >
+            Edit
+          </button>
+        </div>
+        {!editingAddress ? (
+          <div className="bg-[#f1f1f1] border-[0.5px] border-[#e3e3e3] rounded-[12px] p-3 space-y-0.5">
+            <p className="text-[14px] font-medium text-[#1c1c1c]">123 Main St</p>
+            <p className="text-[14px] text-[#717171]">New York, NY 10001</p>
+            <p className="text-[14px] text-[#717171]">United States</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Street Address</Label>
+              <Input placeholder="123 Main St" defaultValue="123 Main St" className="h-9" />
             </div>
-
-            {/* Pagination controls */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-3 pt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={productPage === 0}
-                  onClick={() => setProductPage((p) => p - 1)}
-                >
-                  <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-                  Prev
-                </Button>
-                <span className="text-xs text-muted-foreground">
-                  Page {productPage + 1} of {totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={productPage >= totalPages - 1}
-                  onClick={() => setProductPage((p) => p + 1)}
-                >
-                  Next
-                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                </Button>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs">City</Label>
+                <Input placeholder="City" defaultValue="New York" className="h-9" />
               </div>
-            )}
-
-            {selectedProductId && (
-              <div className="flex items-center gap-2 text-sm text-primary">
-                <CheckCircle2 className="w-4 h-4" />
-                <span className="font-medium">
-                  Product selected: {campaign.productOptions!.find((o) => o.id === selectedProductId)?.name}
-                </span>
+              <div className="space-y-1.5">
+                <Label className="text-xs">State</Label>
+                <Input placeholder="State" defaultValue="NY" className="h-9" />
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1.5">
+                <Label className="text-xs">ZIP</Label>
+                <Input placeholder="ZIP" defaultValue="10001" className="h-9" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs">Country</Label>
+                <Input placeholder="Country" defaultValue="United States" className="h-9" />
+              </div>
+            </div>
+            <Button
+              className="w-full"
+              onClick={() => {
+                setEditingAddress(false);
+                toast.success('Address updated!');
+              }}
+            >
+              <Check className="w-4 h-4 mr-2" />
+              Save Address
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Choose Your Product Card */}
+      {hasProductChoice && (
+        <div className="bg-white border-[0.5px] border-[#e3e3e3] rounded-[16px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)] p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Gift className="w-5 h-5 text-[#7a5cfa]" />
+            <span className="font-semibold text-[14px] text-[#1c1c1c]">Choose Your Product</span>
+          </div>
+          <p className="text-[14px] text-[#717171] mb-4">
+            {campaign.brandName} is offering you a choice. Select the one you'd like to feature.
+          </p>
+          <div className="space-y-4">
+            {allProducts.map((option) => {
+              const isSelected = selectedProductId === option.id;
+              const productUrl = `https://${campaign.brandName.toLowerCase().replace(/\s+/g, '')}.com`;
+              return (
+                <div key={option.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedProductId(option.id);
+                      updateCampaignField(campaign.id, { selectedProduct: option.id });
+                      toast.success(`Selected: ${option.name}`);
+                    }}
+                    className={`w-full text-left rounded-[12px] overflow-hidden transition-all ${
+                      isSelected
+                        ? 'border-[1.5px] border-[#7a5cfa] bg-[#f5f3fc]'
+                        : 'border border-[#c6c6c6]'
+                    }`}
+                  >
+                    <div className="w-full h-[182px] bg-gradient-to-br from-[#f3f4f6] to-[#e5e7eb] flex items-center justify-center relative rounded-t-[12px]">
+                      {option.imageUrl ? (
+                        <img src={option.imageUrl} alt={option.name} className="w-full h-full object-cover rounded-t-[10px]" />
+                      ) : (
+                        <Package className="w-10 h-10 text-[#c6c6c6]" />
+                      )}
+                      {isSelected && (
+                        <div className="absolute top-3 right-3 w-6 h-6 rounded-md bg-[#7a5cfa] flex items-center justify-center">
+                          <Check className="w-3.5 h-3.5 text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="px-3 py-3">
+                      <p className="text-[16px] font-bold text-[#717171]">${option.price?.toFixed(2) || '42.00'}</p>
+                      <p className="text-[13px] font-semibold text-[#101828] mt-0.5">{option.name}</p>
+                      {option.size && (
+                        <p className="text-[12px] text-[#6a7282]">{option.size} · 145 in stock</p>
+                      )}
+                    </div>
+                  </button>
+                  <a
+                    href={productUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 text-[12px] text-[#1c1c1c] font-medium mt-2 py-1.5 hover:underline"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    View on website
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       )}
 
-      {/* Confirm or Modify Shipping Address */}
-      <Card className={!productChosen ? 'opacity-50 pointer-events-none' : ''}>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-primary" />
-            Shipping Address
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {!editingAddress ? (
-            <>
-              <div className="bg-muted rounded-lg p-3 space-y-1 text-sm">
-                <p className="font-medium">123 Main St</p>
-                <p className="text-muted-foreground">New York, NY 10001</p>
-                <p className="text-muted-foreground">United States</p>
+      {/* Coming Up Next Card */}
+      <div className="bg-white border-[0.5px] border-[#e3e3e3] rounded-[16px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)] p-4">
+        <p className="font-bold text-[14px] text-[#525252] tracking-[-0.18px] mb-4">Coming Up Next</p>
+        <div className="space-y-4">
+          {[
+            'Once your product arrives, confirm receipt.',
+            'Create your content per the brief.',
+            'Submit content for review before publishing.',
+          ].map((text, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <div className="w-6 h-6 rounded-full bg-[#d0ff4a] flex items-center justify-center shrink-0">
+                <span className="text-[14px] font-bold text-[#44570e]" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '-0.33px' }}>{i + 1}</span>
               </div>
-              {!addressConfirmed ? (
-                <div className="space-y-2">
-                  <Button
-                    className="w-full h-11 text-base font-semibold"
-                    onClick={() => {
-                      setAddressConfirmed(true);
-                      toast.success('Address confirmed!');
-                    }}
-                  >
-                    <CheckCircle2 className="w-5 h-5 mr-2" />
-                    Confirm Address
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full text-muted-foreground"
-                    onClick={() => setEditingAddress(true)}
-                  >
-                    <Edit3 className="w-3.5 h-3.5 mr-1.5" />
-                    Need to update your address?
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm text-primary">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span className="font-medium">Address confirmed</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground text-xs h-auto py-1 px-2"
-                    onClick={() => {
-                      setAddressConfirmed(false);
-                      setEditingAddress(true);
-                    }}
-                  >
-                    <Edit3 className="w-3 h-3 mr-1" />
-                    Edit
-                  </Button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="space-y-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs">Street Address</Label>
-                <Input placeholder="123 Main St" defaultValue="123 Main St" className="h-9" />
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">City</Label>
-                  <Input placeholder="City" defaultValue="New York" className="h-9" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">State</Label>
-                  <Input placeholder="State" defaultValue="NY" className="h-9" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="space-y-1.5">
-                  <Label className="text-xs">ZIP</Label>
-                  <Input placeholder="ZIP" defaultValue="10001" className="h-9" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label className="text-xs">Country</Label>
-                  <Input placeholder="Country" defaultValue="United States" className="h-9" />
-                </div>
-              </div>
-              <Button
-                className="w-full"
-                onClick={() => {
-                  setEditingAddress(false);
-                  setAddressConfirmed(true);
-                  toast.success('Address updated and confirmed!');
-                }}
-              >
-                <Check className="w-4 h-4 mr-2" />
-                Save & Confirm
-              </Button>
+              <p className="text-[14px] text-[#696969] leading-[20px]">{text}</p>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      </div>
 
-      <StickyCTA>
-        <Button
-          className="w-full h-12 text-base font-semibold"
-          disabled={!productChosen}
+      {/* Bottom: Checkbox + Next button */}
+      <div className="pt-2 pb-4">
+        <label className="flex items-center gap-3 mb-4 cursor-pointer">
+          <div
+            className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-colors ${
+              orderPlaced ? 'bg-[#7a5cfa] border-[#7a5cfa]' : 'border-[#c6c6c6]'
+            }`}
+            onClick={() => setOrderPlaced(!orderPlaced)}
+          >
+            {orderPlaced && <Check className="w-3.5 h-3.5 text-white" />}
+          </div>
+          <span className="text-[14px] text-[#1c1c1c] font-medium">I have placed the order</span>
+        </label>
+        <button
+          className={`w-full h-[48px] rounded-[12px] text-[16px] font-medium text-white transition-colors ${
+            orderPlaced ? 'bg-[#7a5cfa]' : 'bg-[#ebe4ff]'
+          }`}
+          disabled={!orderPlaced}
           onClick={() => {
             window.scrollTo(0, 0);
             setCampaignStep(campaign.id, 'order_placed');
             toast.success('Order marked as placed!');
           }}
         >
-          <Package className="w-5 h-5 mr-2" />
-          I've Placed My Order
-        </Button>
-      </StickyCTA>
-
-      <UpcomingSteps
-        steps={[
-          'Once your product arrives, confirm receipt',
-          'Create your content per the brief',
-          'Submit content for review before publishing',
-        ]}
-      />
+          Next
+        </button>
+      </div>
     </div>
   );
 }
@@ -785,49 +697,60 @@ function ProductPhaseStep({ campaign }: StepProps) {
 /* ─── Step: Order Placed ─── */
 function OrderPlacedStep({ campaign }: StepProps) {
   const { setCampaignStep } = useCreator();
+  const [received, setReceived] = useState(false);
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardContent className="py-6 text-center space-y-2">
-          <div className="relative mx-auto w-12 h-12 mb-1">
-            <Package className="w-12 h-12 text-primary mx-auto animate-bounce" style={{ animationDuration: '2s' }} />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-ping" style={{ animationDuration: '2s' }} />
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full" />
-          </div>
-          <p className="font-semibold text-lg">Product is on its way</p>
-          <p className="text-sm text-muted-foreground">
-            Your order has been placed. Please let us know as soon as you receive it.
-          </p>
-        </CardContent>
-      </Card>
+      {/* Delivery status card */}
+      <div className="bg-white border-[0.5px] border-[#e3e3e3] rounded-[16px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)] p-6 flex flex-col items-center text-center">
+        <div className="w-12 h-12 rounded-full bg-[#f3f0ff] flex items-center justify-center mb-3">
+          <Truck className="w-6 h-6 text-[#7a5cfa]" />
+        </div>
+        <p className="font-semibold text-[16px] text-[#1c1c1c]">Product is on its way</p>
+        <p className="text-[14px] text-[#717171] mt-1">
+          Your order has been placed. Please let us know as soon as you receive it.
+        </p>
+      </div>
 
-      <StickyCTA>
-        <Button
-          className="w-full h-12 text-base font-semibold"
+      {/* Bottom: Checkbox + Next button */}
+      <div className="pt-2 pb-4">
+        <label className="flex items-center gap-3 mb-4 cursor-pointer">
+          <div
+            className={`w-5 h-5 rounded flex items-center justify-center border-2 transition-colors ${
+              received ? 'bg-[#7a5cfa] border-[#7a5cfa]' : 'border-[#c6c6c6]'
+            }`}
+            onClick={() => setReceived(!received)}
+          >
+            {received && <Check className="w-3.5 h-3.5 text-white" />}
+          </div>
+          <span className="text-[14px] text-[#1c1c1c] font-medium">I have received the product</span>
+        </label>
+        <button
+          className={`w-full h-[48px] rounded-[12px] text-[16px] font-medium text-white transition-colors ${
+            received ? 'bg-[#7a5cfa]' : 'bg-[#ebe4ff]'
+          }`}
+          disabled={!received}
           onClick={() => {
             window.scrollTo(0, 0);
-            setCampaignStep(campaign.id, 'order_received');
+            setCampaignStep(campaign.id, 'content_upload');
             toast.success('Product received! Time to create your content.');
           }}
         >
-          <CheckCircle2 className="w-5 h-5 mr-2" />
-          I've Received My Product
-        </Button>
-      </StickyCTA>
+          Next
+        </button>
+      </div>
     </div>
   );
 }
 
-/* ─── Step: Order Received — skip directly to content upload ─── */
+/* ─── Step: Order Received ─── */
 function OrderReceivedStep({ campaign }: StepProps) {
   const { setCampaignStep } = useCreator();
-  // Skip this step — go directly to content upload
   setCampaignStep(campaign.id, 'content_upload');
   return null;
 }
 
-/* ─── Collapsible Campaign Brief (Full) ─── */
+/* ─── Collapsible Campaign Brief ─── */
 function CampaignBriefCollapsible({ campaign }: StepProps) {
   const [briefOpen, setBriefOpen] = useState(false);
 
@@ -890,7 +813,7 @@ function CampaignBriefCollapsible({ campaign }: StepProps) {
   );
 }
 
-/* ─── Step: Content Upload (Flat layout + inline compliance per deliverable) ─── */
+/* ─── Step: Content Upload ─── */
 function ContentUploadStep({ campaign }: StepProps) {
   const { setCampaignStep, updateCampaignField } = useCreator();
   const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
@@ -905,12 +828,6 @@ function ContentUploadStep({ campaign }: StepProps) {
       isFixed: true,
     }))
   );
-  function addEntry() {
-    setEntries((prev) => [
-      ...prev,
-      { id: `entry-${Date.now()}`, platform: 'TikTok', type: 'upload' as const, url: '', fileName: '', caption: '', isFixed: false },
-    ]);
-  }
 
   function updateEntry(id: string, field: string, value: string | boolean) {
     setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, [field]: value } : e)));
@@ -936,192 +853,152 @@ function ContentUploadStep({ campaign }: StepProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200">
-        <Upload className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-        <p className="text-xs text-amber-800">
-          Submit your content for review by <strong>{campaign.contentDueDate}</strong>. Do not publish — content must be approved first.
+      {/* Warning Banner */}
+      <div className="bg-[#fff8ed] border-[0.5px] border-[#eae0cf] rounded-[16px] px-4 py-3">
+        <p className="text-[14px] text-[#b66d1f] leading-[20px]">
+          Submit your content for review by <strong className="text-[#7f4c14]">{campaign.contentDueDate}</strong>. Do not publish — content must be approved first.
         </p>
       </div>
 
-      {/* Full brief at top for reference */}
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base flex items-center gap-2">
-            <FileText className="w-4 h-4 text-primary" />
-            Campaign Brief
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-sm text-muted-foreground">{campaign.description}</p>
-          <ul className="space-y-1.5">
-            {campaign.requirements.map((req, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                {req}
-              </li>
-            ))}
-          </ul>
+      {/* Campaign Brief Card */}
+      <div className="bg-white border-[0.5px] border-[#e3e3e3] rounded-[16px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)] p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <FileText className="w-5 h-5 text-[#717171]" />
+          <span className="font-semibold text-[14px] text-[#1c1c1c]">Campaign Brief</span>
+        </div>
+        <p className="text-[14px] text-[#696969] leading-[20px]">{campaign.description}</p>
+        <ul className="space-y-2">
+          {campaign.requirements.map((req, i) => (
+            <li key={i} className="flex items-start gap-2">
+              <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+              <span className="text-[14px] text-[#696969]">{req}</span>
+            </li>
+          ))}
+        </ul>
+        {campaign.hashtags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {campaign.hashtags.map((tag) => (
-              <Badge key={tag} variant="secondary" className="text-xs">
+              <span key={tag} className="bg-[#f5f3fc] rounded-full px-[9px] py-[3px] text-[12px] text-[#393939] font-medium">
                 {tag}
-              </Badge>
+              </span>
             ))}
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="w-4 h-4 text-primary shrink-0" />
-            Content due: <strong>{campaign.contentDueDate}</strong>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Submit Your Content heading */}
-      <div className="px-1">
-        <h3 className="text-base font-semibold">Submit Your Content</h3>
-        <p className="text-sm text-muted-foreground mt-1">
-          Upload your image or video and add your caption for each deliverable.
-        </p>
+        )}
       </div>
 
-      {/* Flat deliverable list — each deliverable is its own card with inline compliance */}
+      {/* Platform Sections */}
       {entries.map((entry) => {
+        const captionReqs = campaign.requirements
+          .filter((req) => req.toLowerCase().includes('caption') || req.toLowerCase().includes('mention') || req.toLowerCase().includes('hashtag') || req.toLowerCase().includes('include'));
+
         return (
-          <Card key={entry.id}>
-            <CardContent className="py-3 space-y-2.5">
-              {/* Header row */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {entry.isFixed ? (
-                    <span className="text-sm font-semibold">{entry.platform}</span>
-                  ) : (
-                    <Select value={entry.platform} onValueChange={(v) => updateEntry(entry.id, 'platform', v)}>
-                      <SelectTrigger className="h-8 w-[140px] text-xs"><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {CONTENT_PLATFORMS.map((p) => (
-                          <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+          <div key={entry.id} className="space-y-3">
+            {/* Section Title */}
+            <h3 className="font-semibold text-[16px] text-black tracking-[-0.5px]">{entry.platform}</h3>
+
+            {/* Upload Area */}
+            {entry.uploading ? (
+              <div className="flex items-center justify-center gap-2 bg-white border border-dashed border-[#c6c6c6] rounded-[12px] h-[124px]">
+                <Loader2 className="w-5 h-5 text-[#7a5cfa] animate-spin" />
+                <span className="text-[14px] text-[#7a5cfa] font-medium">Uploading...</span>
+              </div>
+            ) : entry.fileName ? (
+              <div className="space-y-1.5">
+                <UploadedAssetPreview platform={entry.platform} fileName={entry.fileName} />
+                <button
+                  onClick={() => {
+                    updateEntry(entry.id, 'fileName', '');
+                    updateEntry(entry.id, 'url', '');
+                  }}
+                  className="text-[12px] text-[#7a5cfa] hover:underline flex items-center gap-1"
+                >
+                  <Edit3 className="w-3 h-3" /> Replace file
+                </button>
+              </div>
+            ) : (
+              <div
+                className="bg-white border border-dashed border-[#c6c6c6] rounded-[12px] h-[124px] flex flex-col items-center justify-center cursor-pointer hover:border-[#7a5cfa]/40 hover:bg-[#7a5cfa]/5 transition-colors"
+                onClick={() => fileInputRefs.current[entry.id]?.click()}
+              >
+                <Upload className="w-6 h-6 text-[#a0a0a0] mb-1.5" />
+                <p className="text-[14px] font-medium text-[#696969]">Upload video</p>
+                <input
+                  ref={(el) => { fileInputRefs.current[entry.id] = el; }}
+                  type="file"
+                  accept="image/*,video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) simulateUpload(entry.id, file);
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Requirements Box */}
+            {(captionReqs.length > 0 || campaign.hashtags.length > 0) && (
+              <div className="bg-[#f5f3fc] border-[0.5px] border-[#efecf7] rounded-[16px] p-[12px] space-y-2">
+                <p className="font-semibold text-[14px] text-[#717171]">Requirements for this post</p>
+                <div className="space-y-1.5">
+                  {captionReqs.map((req, ri) => (
+                    <div key={ri} className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+                      <p className="text-[14px] text-[#696969]">{req}</p>
+                    </div>
+                  ))}
+                  {campaign.hashtags.length > 0 && (
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
+                      <p className="text-[14px] text-[#696969]">
+                        Include hashtags: <span className="text-[#7a5cfa]">{campaign.hashtags.join(' ')}</span>
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
+            )}
 
-              {/* Upload area */}
-              {entry.uploading ? (
-                <div className="flex items-center justify-center gap-2 py-6 border-2 border-dashed border-primary/30 rounded-lg bg-primary/5">
-                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  <span className="text-sm text-primary font-medium">Uploading...</span>
-                </div>
-              ) : entry.fileName ? (
-                /* Show uploaded asset preview */
-                <div className="space-y-1.5">
-                  <UploadedAssetPreview platform={entry.platform} fileName={entry.fileName} />
-                  <button
-                    onClick={() => {
-                      updateEntry(entry.id, 'fileName', '');
-                      updateEntry(entry.id, 'url', '');
-                    }}
-                    className="text-[11px] text-primary hover:underline flex items-center gap-1"
-                  >
-                    <Edit3 className="w-3 h-3" /> Replace file
-                  </button>
-                </div>
-              ) : (
-                /* Upload drop zone */
-                <div
-                  className="border-2 border-dashed border-border rounded-lg px-4 py-5 text-center cursor-pointer hover:border-primary/40 hover:bg-primary/5 transition-colors"
-                  onClick={() => fileInputRefs.current[entry.id]?.click()}
-                >
-                  <Upload className="w-6 h-6 text-muted-foreground mx-auto mb-1.5" />
-                  <p className="text-sm font-medium">Upload image or video</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">JPG, PNG, MP4, MOV — max 100MB</p>
-                  <input
-                    ref={(el) => { fileInputRefs.current[entry.id] = el; }}
-                    type="file"
-                    accept="image/*,video/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) simulateUpload(entry.id, file);
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* Requirements callout box — prominent, above caption */}
-              {(() => {
-                const captionReqs = campaign.requirements
-                  .filter((req) => req.toLowerCase().includes('caption') || req.toLowerCase().includes('mention') || req.toLowerCase().includes('hashtag') || req.toLowerCase().includes('include'));
-                const hasReqs = captionReqs.length > 0 || campaign.hashtags.length > 0;
-                if (!hasReqs) return null;
-                return (
-                  <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 space-y-2">
-                    <p className="text-xs font-semibold text-primary flex items-center gap-1.5">
-                      <AlertCircle className="w-3.5 h-3.5" />
-                      Requirements for this post
-                    </p>
-                    <div className="space-y-1.5">
-                      {captionReqs.map((req, ri) => (
-                        <div key={ri} className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                          <p className="text-xs font-medium text-foreground">{req}</p>
-                        </div>
-                      ))}
-                      {campaign.hashtags.length > 0 && (
-                        <div className="flex items-start gap-2">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-                          <p className="text-xs font-medium text-foreground">
-                            Include hashtags: <span className="text-primary">{campaign.hashtags.join(' ')}</span>
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Caption / text input */}
-              <div className="space-y-1">
-                <Label className="text-xs text-muted-foreground">Caption</Label>
-                <Textarea
-                  placeholder="Write your caption here... Include hashtags and @mentions"
-                  value={entry.caption || ''}
-                  onChange={(e) => updateEntry(entry.id, 'caption', e.target.value)}
-                  className="min-h-[80px] text-sm resize-none"
-                />
-              </div>
-
-            </CardContent>
-          </Card>
+            {/* Caption Field */}
+            <div className="space-y-1.5">
+              <label className="text-[14px] text-[#717171] font-medium">Caption</label>
+              <Textarea
+                placeholder="Write your caption here... Include hashtags and @mentions"
+                value={entry.caption || ''}
+                onChange={(e) => updateEntry(entry.id, 'caption', e.target.value)}
+                className="border border-[#ddd] rounded-[12px] h-[105px] text-[14px] resize-none"
+              />
+            </div>
+          </div>
         );
       })}
 
-      {/* Add another deliverable */}
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        className="w-full"
-        onClick={addEntry}
-      >
-        <Plus className="w-4 h-4 mr-1.5" />
-        Add Another Deliverable
-      </Button>
+      {/* Coming Up Next Card */}
+      <div className="bg-white border-[0.5px] border-[#e3e3e3] rounded-[16px] shadow-[0px_4px_32px_0px_rgba(0,0,0,0.04)] p-4">
+        <p className="font-bold text-[14px] text-[#525252] tracking-[-0.18px] mb-4">Coming Up Next</p>
+        <div className="space-y-4">
+          {[
+            "We'll review your content (1-3 business days).",
+            "Once approved, you'll get your publish window.",
+            'Post and confirm to complete the campaign.',
+          ].map((text, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <div className="w-6 h-6 rounded-full bg-[#d0ff4a] flex items-center justify-center shrink-0">
+                <span className="text-[14px] font-bold text-[#44570e]" style={{ fontFamily: "'Barlow Condensed', sans-serif", letterSpacing: '-0.33px' }}>{i + 1}</span>
+              </div>
+              <p className="text-[14px] text-[#696969] leading-[20px]">{text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <StickyCTA>
-        <Button className="w-full h-12 text-base font-semibold" onClick={handleSubmit}>
-          <Send className="w-5 h-5 mr-2" />
+        <button
+          className="bg-[#7a5cfa] text-white rounded-[12px] h-[48px] w-full text-[16px] font-semibold hover:bg-[#6b4ee6] transition-colors"
+          onClick={handleSubmit}
+        >
           Submit for Review
-        </Button>
+        </button>
       </StickyCTA>
-
-      <UpcomingSteps
-        steps={[
-          "We'll review your content (1-3 business days)",
-          "Once approved, you'll get your publish window",
-          'Post and confirm to complete the campaign',
-        ]}
-      />
     </div>
   );
 }
@@ -1135,7 +1012,7 @@ function ContentReviewStep({ campaign }: StepProps) {
           <Clock className="w-12 h-12 text-blue-500 mx-auto mb-3" />
           <p className="font-semibold text-lg">Waiting for Review</p>
           <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
-            Your content has been submitted and is being reviewed. This usually takes 1-3 business days. We'll email you when it's ready.
+            Your content has been submitted and is being reviewed. This usually takes 1-3 business days.
           </p>
           <div className="flex items-center gap-2 justify-center mt-4 px-4 py-2.5 bg-red-50 rounded-lg">
             <AlertTriangle className="w-4 h-4 text-red-600 shrink-0" />
@@ -1146,7 +1023,6 @@ function ContentReviewStep({ campaign }: StepProps) {
         </CardContent>
       </Card>
 
-      {/* Show submitted content */}
       {campaign.contentSubmissions.length > 0 && (
         <Card>
           <CardHeader className="pb-3">
@@ -1167,12 +1043,11 @@ function ContentReviewStep({ campaign }: StepProps) {
   );
 }
 
-/* ─── Step: Compliance Feedback (Per-Deliverable, no re-upload) ─── */
+/* ─── Step: Compliance Feedback ─── */
 function ComplianceFeedbackStep({ campaign }: StepProps) {
   const { setCampaignStep } = useCreator();
   const checklist = campaign.complianceChecklist || [];
 
-  // Group feedback by deliverable
   const deliverables = [
     {
       platform: 'TikTok',
@@ -1186,7 +1061,6 @@ function ComplianceFeedbackStep({ campaign }: StepProps) {
 
   return (
     <div className="space-y-4">
-      {/* Reviewer Notes — speech bubble style */}
       {campaign.complianceNotes && (
         <Card>
           <CardContent className="py-4 space-y-2">
@@ -1209,7 +1083,6 @@ function ComplianceFeedbackStep({ campaign }: StepProps) {
         </Card>
       )}
 
-      {/* Per-deliverable feedback — separate section for TikTok and Instagram */}
       {deliverables.map((del) => {
         const needsWork = del.items.some((item) => item.status !== 'approved');
         return (
@@ -1296,7 +1169,7 @@ function ComplianceFeedbackStep({ campaign }: StepProps) {
   );
 }
 
-/* ─── Step: Content Approved + Publish (Window Logic + Live Links + "I've Published") ─── */
+/* ─── Step: Content Approved + Publish ─── */
 function ContentApprovedStep({ campaign }: StepProps) {
   const { setCampaignStep, updateCampaignField } = useCreator();
   const [links, setLinks] = useState<ContentLinkEntry[]>(
@@ -1309,10 +1182,7 @@ function ContentApprovedStep({ campaign }: StepProps) {
   );
   const [showMissingLinksPrompt, setShowMissingLinksPrompt] = useState(false);
 
-  // Always allow posting — window is always open for MVP
   const isPreWindow = false;
-
-  // Only required (non-extra) links must have URLs before completing
   const requiredLinks = links.filter((l) => !l.id.startsWith('pub-extra-'));
   const allRequiredFilled = requiredLinks.every((l) => l.url.trim() !== '');
   const filledCount = links.filter((l) => l.url.trim() !== '').length;
@@ -1337,7 +1207,6 @@ function ContentApprovedStep({ campaign }: StepProps) {
       setShowMissingLinksPrompt(true);
       return;
     }
-    // All links filled — complete
     updateCampaignField(campaign.id, { publishedLinks: links.filter((l) => l.url) });
     window.scrollTo(0, 0);
     setCampaignStep(campaign.id, 'completed');
@@ -1346,11 +1215,9 @@ function ContentApprovedStep({ campaign }: StepProps) {
 
   return (
     <div className="space-y-4">
-      {/* Content Approved + Post ASAP — single polished card */}
       <Card className="overflow-hidden border-0 shadow-md">
-        {/* Approved banner */}
         <div className="bg-gradient-to-r from-green-500 to-emerald-500 px-5 py-3 flex items-center gap-2.5 animate-in fade-in-0 slide-in-from-top-2 duration-500">
-          <CheckCircle2 className="w-5 h-5 text-white animate-spin" style={{ animationDuration: '0.5s', animationIterationCount: '1', animationFillMode: 'forwards' }} />
+          <CheckCircle2 className="w-5 h-5 text-white" />
           <h3 className="font-bold text-white text-base">Content Approved</h3>
         </div>
         <CardContent className="py-5 space-y-3">
@@ -1368,7 +1235,6 @@ function ContentApprovedStep({ campaign }: StepProps) {
         </CardContent>
       </Card>
 
-      {/* Live Public Links Input — shown during/after window */}
       {!isPreWindow && (
         <>
           <div className="px-1">
@@ -1427,7 +1293,6 @@ function ContentApprovedStep({ campaign }: StepProps) {
             );
           })}
 
-          {/* Add more links button */}
           <Button
             type="button"
             variant="outline"
@@ -1439,7 +1304,6 @@ function ContentApprovedStep({ campaign }: StepProps) {
             Add Another Link
           </Button>
 
-          {/* Progress indicator */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
             <div className="flex-1 bg-muted rounded-full h-1.5">
               <div
@@ -1452,7 +1316,6 @@ function ContentApprovedStep({ campaign }: StepProps) {
         </>
       )}
 
-      {/* "I've Published My Content" button — requires all links, prompts if missing */}
       {!isPreWindow && (
         <StickyCTA>
           <Button
@@ -1465,7 +1328,6 @@ function ContentApprovedStep({ campaign }: StepProps) {
         </StickyCTA>
       )}
 
-      {/* AlertDialog for missing links — controlled */}
       <AlertDialog open={showMissingLinksPrompt} onOpenChange={setShowMissingLinksPrompt}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -1484,13 +1346,12 @@ function ContentApprovedStep({ campaign }: StepProps) {
   );
 }
 
-/* ─── Step: Completed (Message from Benable, back to home, no summary) ─── */
+/* ─── Step: Completed ─── */
 function CompletedStep({ campaign: _campaign }: StepProps) {
   const navigate = useNavigate();
 
   return (
     <div className="space-y-4">
-      {/* Main congratulations message */}
       <Card className="border-primary/20 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent">
         <CardContent className="py-8 text-center space-y-4">
           <div className="relative mx-auto w-14 h-14">
@@ -1517,7 +1378,6 @@ function CompletedStep({ campaign: _campaign }: StepProps) {
         </CardContent>
       </Card>
 
-      {/* Back to Home */}
       <StickyCTA>
         <Button
           className="w-full h-12 text-base font-semibold"
@@ -1531,25 +1391,3 @@ function CompletedStep({ campaign: _campaign }: StepProps) {
   );
 }
 
-/* ─── Shared: Upcoming Steps ─── */
-function UpcomingSteps({ steps }: { steps: string[] }) {
-  return (
-    <Card className="bg-muted/50 border-dashed">
-      <CardContent className="py-4">
-        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2">
-          Coming Up Next
-        </p>
-        <div className="space-y-2">
-          {steps.map((step, i) => (
-            <div key={i} className="flex items-start gap-2">
-              <div className="w-5 h-5 rounded-full bg-muted flex items-center justify-center shrink-0 text-[10px] font-semibold text-muted-foreground mt-0.5">
-                {i + 1}
-              </div>
-              <p className="text-sm text-muted-foreground">{step}</p>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
